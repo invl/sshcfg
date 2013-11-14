@@ -67,5 +67,9 @@ def rm(name):
         if item['config'] and item['host'] != [name]:
             dump_item(item)
 
-if __name__ == '__main__':
+
+def main():
     argh.dispatch_commands([ls, add, rm])
+
+if __name__ == '__main__':
+    main()
