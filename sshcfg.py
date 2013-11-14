@@ -54,8 +54,7 @@ def dump_item(item):
 
 def add(name, uri):
     cfg = load_sshconfig()
-    newitem = {"host": [name], "config": vacumm_dict(parse_uri(uri))}
-    cfg.append(newitem)
+    cfg.append({"host": [name], "config": vacumm_dict(parse_uri(uri))})
     dump_sshconfig(cfg)
 
 
