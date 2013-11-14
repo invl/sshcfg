@@ -55,7 +55,13 @@ def dump_item(item):
 def add(name, uri):
     cfg = load_sshconfig()
     cfg.append({"host": [name], "config": vacumm_dict(parse_uri(uri))})
-    return dump_sshconfig(cfg)
+    write_sshconfig(dump_sshconfig(cfg))
+
+
+def write_sshconfig(lines):
+    with open(os.path.expanduser('~/.ssh/config'), 'w') as f:
+        for line in lines:
+            f.write(line + '\n')
 
 
 def dump_sshconfig(cfg):
@@ -67,7 +73,7 @@ def dump_sshconfig(cfg):
 
 def rm(name):
     cfg = [item for item in load_sshconfig() if item['host'] != [name]]
-    return dump_sshconfig(cfg)
+    write_sshconfig(dump_sshconfig(cfg))
 
 
 def main():
