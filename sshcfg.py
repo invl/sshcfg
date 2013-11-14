@@ -17,8 +17,7 @@ def to_uri(config):
 
 def ls():
     for item in load_sshconfig():
-        if item['config']:
-            yield str_item(item)
+        yield str_item(item)
 
 
 def str_item(item):
@@ -29,7 +28,7 @@ def load_sshconfig():
     cfg = paramiko.SSHConfig()
     with open(get_sshconfig_path()) as f:
         cfg.parse(f)
-    return cfg._config
+    return [item for item in cfg._config if item['config']]
 
 
 def parse_uri(uri):
@@ -70,9 +69,8 @@ def get_sshconfig_path():
 
 def dump_sshconfig(cfg):
     for item in cfg:
-        if item['config']:
-            for line in dump_item(item):
-                yield line
+        for line in dump_item(item):
+            yield line
 
 
 def rm(name):
