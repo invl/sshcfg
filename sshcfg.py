@@ -37,7 +37,7 @@ def parse_uri(uri):
     return {
         "hostname": p.hostname,
         "user": p.username,
-        "port": str(p.port),
+        "port": p.port,
     }
 
 
@@ -48,7 +48,7 @@ def vacumm_dict(d):
 def dump_item(item):
     print 'host', item['host'][0]
     for k, v in item['config'].items():
-        print '    ' + k, v
+        print '    ' + k, str(v)
     print
 
 
