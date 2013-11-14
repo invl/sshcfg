@@ -22,17 +22,12 @@ def write_sshconfig(lines):
             f.write(line + '\n')
 
 
-def dump_item(item):
-    yield 'host {}'.format(item['host'][0])
-    for k, v in item['config'].items():
-        yield '    {} {}'.format(k, v)
-    yield ''
-
-
 def dump_sshconfig(cfg):
     for item in cfg:
-        for line in dump_item(item):
-            yield line
+        yield 'host {}'.format(item['host'][0])
+        for k, v in item['config'].items():
+            yield '    {} {}'.format(k, v)
+        yield ''
 
 
 def to_uri(config):
