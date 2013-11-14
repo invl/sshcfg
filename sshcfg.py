@@ -62,9 +62,9 @@ def add(name, uri):
 
 
 def rm(name):
-    cfg = load_sshconfig()
+    cfg = [item for item in load_sshconfig() if item['host'] != [name]]
     for item in cfg:
-        if item['config'] and item['host'] != [name]:
+        if item['config']:
             dump_item(item)
 
 
