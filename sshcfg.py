@@ -18,7 +18,7 @@ def to_uri(config):
 def ls():
     for item in load_sshconfig():
         if item['config']:
-            print str_item(item)
+            yield str_item(item)
 
 
 def str_item(item):
@@ -46,27 +46,28 @@ def vacumm_dict(d):
 
 
 def dump_item(item):
-    print 'host', item['host'][0]
+    yield 'host {}'.format(item['host'][0])
     for k, v in item['config'].items():
-        print '    ' + k, str(v)
-    print
+        yield '    {} {}'.format(k, v)
+    yield ''
 
 
 def add(name, uri):
     cfg = load_sshconfig()
     cfg.append({"host": [name], "config": vacumm_dict(parse_uri(uri))})
-    dump_sshconfig(cfg)
+    return dump_sshconfig(cfg)
 
 
 def dump_sshconfig(cfg):
     for item in cfg:
         if item['config']:
-            dump_item(item)
+            for line in dump_item(item):
+                yield line
 
 
 def rm(name):
     cfg = [item for item in load_sshconfig() if item['host'] != [name]]
-    dump_sshconfig(cfg)
+    return dump_sshconfig(cfg)
 
 
 def main():
