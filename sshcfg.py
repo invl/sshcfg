@@ -27,7 +27,7 @@ def str_item(item):
 
 def load_sshconfig():
     cfg = paramiko.SSHConfig()
-    with open(os.path.expanduser('~/.ssh/config')) as f:
+    with open(get_sshconfig_path()) as f:
         cfg.parse(f)
     return cfg._config
 
@@ -59,9 +59,13 @@ def add(name, uri):
 
 
 def write_sshconfig(lines):
-    with open(os.path.expanduser('~/.ssh/config'), 'w') as f:
+    with open(get_sshconfig_path(), 'w') as f:
         for line in lines:
             f.write(line + '\n')
+
+
+def get_sshconfig_path():
+    return os.path.expanduser('~/.ssh/config')
 
 
 def dump_sshconfig(cfg):
