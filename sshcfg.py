@@ -40,10 +40,6 @@ def to_uri(config):
         yield config['port']
 
 
-def str_item(item):
-    return '{}\t{}'.format(item['host'][0], ''.join(to_uri(item['config'])))
-
-
 def parse_uri(uri):
     p = urlparse.urlsplit('ssh://' + uri)
     return {
@@ -59,7 +55,7 @@ def vacumm_dict(d):
 
 def ls():
     for item in load_sshconfig():
-        yield str_item(item)
+        yield '{}\t{}'.format(item['host'][0], ''.join(to_uri(item['config'])))
 
 
 def add(name, uri):
