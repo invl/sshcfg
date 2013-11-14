@@ -5,6 +5,36 @@ import argh
 import paramiko
 
 
+def get_sshconfig_path():
+    return os.path.expanduser('~/.ssh/config')
+
+
+def load_sshconfig():
+    cfg = paramiko.SSHConfig()
+    with open(get_sshconfig_path()) as f:
+        cfg.parse(f)
+    return [item for item in cfg._config if item['config']]
+
+
+def write_sshconfig(lines):
+    with open(get_sshconfig_path(), 'w') as f:
+        for line in lines:
+            f.write(line + '\n')
+
+
+def dump_item(item):
+    yield 'host {}'.format(item['host'][0])
+    for k, v in item['config'].items():
+        yield '    {} {}'.format(k, v)
+    yield ''
+
+
+def dump_sshconfig(cfg):
+    for item in cfg:
+        for line in dump_item(item):
+            yield line
+
+
 def to_uri(config):
     if 'user' in config:
         yield config['user']
@@ -15,20 +45,8 @@ def to_uri(config):
         yield config['port']
 
 
-def ls():
-    for item in load_sshconfig():
-        yield str_item(item)
-
-
 def str_item(item):
     return '{}\t{}'.format(item['host'][0], ''.join(to_uri(item['config'])))
-
-
-def load_sshconfig():
-    cfg = paramiko.SSHConfig()
-    with open(get_sshconfig_path()) as f:
-        cfg.parse(f)
-    return [item for item in cfg._config if item['config']]
 
 
 def parse_uri(uri):
@@ -44,33 +62,15 @@ def vacumm_dict(d):
     return dict((k, v) for k, v in d.items() if v)
 
 
-def dump_item(item):
-    yield 'host {}'.format(item['host'][0])
-    for k, v in item['config'].items():
-        yield '    {} {}'.format(k, v)
-    yield ''
+def ls():
+    for item in load_sshconfig():
+        yield str_item(item)
 
 
 def add(name, uri):
     cfg = load_sshconfig()
     cfg.append({"host": [name], "config": vacumm_dict(parse_uri(uri))})
     write_sshconfig(dump_sshconfig(cfg))
-
-
-def write_sshconfig(lines):
-    with open(get_sshconfig_path(), 'w') as f:
-        for line in lines:
-            f.write(line + '\n')
-
-
-def get_sshconfig_path():
-    return os.path.expanduser('~/.ssh/config')
-
-
-def dump_sshconfig(cfg):
-    for item in cfg:
-        for line in dump_item(item):
-            yield line
 
 
 def rm(name):
